@@ -278,7 +278,7 @@
             this.BackspaceButton.Name = "BackspaceButton";
             this.BackspaceButton.Size = new System.Drawing.Size(68, 53);
             this.BackspaceButton.TabIndex = 2;
-            this.BackspaceButton.Text = "<";
+            this.BackspaceButton.Text = "⌫";
             this.BackspaceButton.UseVisualStyleBackColor = true;
             this.BackspaceButton.Click += new System.EventHandler(this.OperatorButton_Click);
             // 

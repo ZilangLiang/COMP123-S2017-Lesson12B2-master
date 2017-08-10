@@ -13,7 +13,7 @@ using System.Windows.Forms;
  * Name: Tom Tsiliopoulos
  * Date: August 3, 2017
  * Description: Calculator Demo Project
- * Version: 1.0 - Added the _calculate and _convert
+ * Version: 1.1 - Added the _showResult method
  */
 
 namespace COMP123_S2017_Lesson12B2
@@ -26,6 +26,8 @@ namespace COMP123_S2017_Lesson12B2
         private string _currentOperator;
 
         private List<double> _operandList;
+
+        private double _result;
 
         // PUBLIC PROPERTIES
         public bool IsDecimalClicked {
@@ -42,30 +44,47 @@ namespace COMP123_S2017_Lesson12B2
 
         }
 
-        public string CurrentOperator
-        {
+        public string CurrentOperator {
+
             get
             {
                 return this._currentOperator;
             }
+
             set
             {
                 this._currentOperator = value;
             }
-        }
+
+                }
 
         public List<double> OperandList {
+
             get
             {
-                return this.OperandList;
+                return this._operandList;
             }
+
             set
             {
                 this._operandList = value;
             }
-        }
 
-        
+           }
+
+        public double Result {
+
+            get
+            {
+                return this._result;
+            }
+
+            set
+            {
+                this._result = value;
+            }
+
+        }
 
         // CONSTRUCTORS
 
@@ -138,38 +157,66 @@ namespace COMP123_S2017_Lesson12B2
         {
             Button operatorButton = sender as Button; // downcasting
 
+            double operand = this._convertOperand(ResultTextBox.Text); // convert to number
+
+
             switch (operatorButton.Text)
             {
                 case "C":
                     this._clear();
                     break;
-                
-                    break;
                 case "=":
+                    this._showResult(operand);
                     break;
-                case "<":
+                case "⌫":
                     break;
                 case "±":
                     break;
                 default:
-                    this._calculate(ResultTextBox.Text, operatorButton.Text);
+                    this._calculate(operand, operatorButton.Text);
                     break;
             }
 
 
         }
+
         /// <summary>
-        /// This methods calculates the result of all the operands in the OperandList
+        /// This method shows the Result of the last operation in the ResultTextBox
         /// </summary>
-        /// <param name="text1"></param>
-        /// <param name="text2"></param>
-        private void _calculate(string operandString, string operatorString)
+        /// <param name="text"></param>
+        private void _showResult(double operand)
         {
-            double operand = this._convertOperand(operandString);
+            this._calculate(operand, this.CurrentOperator);
+            ResultTextBox.Text = this.Result.ToString();
         }
 
         /// <summary>
-        /// This method converts the string from the Resulttextbox
+        /// This method calculates the result of all the operands in the OperandList
+        /// </summary>
+        /// <param name="text1"></param>
+        /// <param name="text2"></param>
+        private void _calculate(double operand, string operatorString)
+        {
+
+            OperandList.Add(operand);
+            if(OperandList.Count > 1)
+            {
+                switch (operatorString)
+                {
+                    case "+":
+                        this.Result = this.OperandList[0] + this.OperandList[1];
+                        break;
+                    case "-":
+                        this.Result = this.OperandList[0] - this.OperandList[1];
+                        break;
+                }
+            }
+
+            this.CurrentOperator = operatorString;
+        }
+
+        /// <summary>
+        /// This method converts the string from the ResultTextBox to a number
         /// </summary>
         /// <param name="operandString"></param>
         /// <returns></returns>
@@ -179,14 +226,15 @@ namespace COMP123_S2017_Lesson12B2
             {
                 return Convert.ToDouble(operandString);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
-                Debug.WriteLine("An Error occurred");
+
+                Debug.WriteLine("An Error Occurred");
                 Debug.WriteLine(exception.Message);
             }
             return 0;
-        }
 
+        }
 
         /// <summary>
         /// This is the private _clear method. It resets / clears the calculator.
